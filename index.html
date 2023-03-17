@@ -4,10 +4,9 @@
 <meta name="viewport"    content="width=device-width" />
 <meta name="author"      content="M A Eyler, Istanbul, 2023" />
 <meta name="description" content="Ruhsuz Sohbet ve Çeviri" />
-<!-- <meta name="theme-color" content="#59b" /> -->
 <!-- <link rel="stylesheet" href="code/reader.css" media="all"> -->
 <link rel="icon" href="image/robot.png">
-<title>Ruhsuz Zekâ 🤖</title>
+<title>Ruhsuz Zekâ</title>
 
 <style>
   body  {
@@ -15,6 +14,9 @@
     background: honeydew;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13pt;
+  }
+  h2 {
+    margin-top: 0;
   }
   iframe {
     background: white;
@@ -30,6 +32,10 @@
     color: white;
     padding: 10px;
   }
+  #keyBut {
+    position: absolute;
+    top: 4px; right: 4px;
+  }
   .column {
     box-sizing: border-box;
     display: inline-block;
@@ -41,8 +47,10 @@
 
 <div class=column>
   <h2 id=ruhsuz></h2>
-  <p id=getKey>API anahtarı gerekli: 
-    <a href="https://platform.openai.com/account/api-keys">Buradan alın</a>
+  <button id="keyBut">🔑</button>
+  <p>
+    <span id=getKey>API anahtarı gerekli: 
+    <a href="https://platform.openai.com/account/api-keys">Buradan alın</a></span>
   </p>
   <p>Yazılımın iki bileşeni:&emsp;
     <button disabled>Sohbet</button>&emsp;
@@ -62,12 +70,12 @@
   </ul>
   <p>Ses tanımayı desteklemeyen tarayıcılarda sesli komut yerine yazılı komut (düz metin) ile çalışır</p>
 </div>
-<iframe class=column>
+<iframe class=column id=app>
   Output burada görülecek
 </iframe>
 
 <script>
-  ruhsuz.textContent = document.title
-  if (localStorage.openai) getKey.hidden = true
+  ruhsuz.textContent = document.title+' 🤖'
+  if (localStorage.openAI) getKey.hidden = true
 </script>
 </html>
