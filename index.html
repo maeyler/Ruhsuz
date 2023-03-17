@@ -76,6 +76,9 @@
 
 <script>
   ruhsuz.textContent = document.title+' 🤖'
-  if (localStorage.openAI) getKey.hidden = true
+  if (localStorage.openAI) {
+    getKey.hidden = true
+    app.src = "sohbet.html"
+  }
 </script>
 </html>

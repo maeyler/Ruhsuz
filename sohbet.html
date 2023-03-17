@@ -2,14 +2,14 @@
 <html lang="en-US">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width">
-  <title>Simple ChatBot</title>
+  <title>Ruhsuz Zekâ</title>
   <style>
     body {
       max-width: 600px;
     }
     input[type="search" i] {
       padding: 5px;
-      width: 80%;
+      width: 75%;
     }
     #chatlog {
       resize: both;
@@ -45,32 +45,64 @@
       padding: 0 3px;
       cursor: pointer;
     }
+    button {
+      padding: 4px;
+    }
   </style>
 
 <h2 id=title></h2>
 <div id=main>
   <div id="chatlog"></div>
   <div>
-    <input type="search" id="input" placeholder="Query here">
-    <button id="button">Listen</button>
+    <button id="keyBut">🔑</button>
+    <input type="search" id="input" placeholder="Sesli sorabilirsiniz">
+    <button id="listenB">🎤</button>
   </div>
 </div>
 <div id=noKey>
-  <p>You need an openAI access key from
-    <a href="https://platform.openai.com/account/api-keys">here</a>
+  <p>"OpenAI API key" gerekiyor:
+    <a href="https://platform.openai.com/account/api-keys">Buradan alın</a>
   </p>
 </div>
   
-<script src="../util/Util.js"></script>  
 <script>
-  const VERSION = 'V0.1';
-  const access = new KeyHolder('openAI');
+  const VERSION = 'V0.4';
   const MODEL = 'text-davinci-002';
+  const max_tokens = 256;
   const chatlog = document.getElementById('chatlog');
   const input = document.getElementById('input');
-  const button = document.getElementById('button');
+  const keyBut = document.getElementById('keyBut');
+  const listenB = document.getElementById('listenB');
+  const MICRO = listenB.textContent, STOP = '🗙';
 
   var recognition = false;
+  var currentKey = getKey()
+  function getKey() {
+    let k = localStorage.openAI
+    if (k) return k
+    let x = localStorage.keys
+    if (!x) return null
+    k = JSON.parse(x).openAI
+    if (!k) return null
+    saveKey(k); return k
+  }
+  function saveKey(k) {
+    if (localStorage.openAI !== k)
+        localStorage.openAI = k
+  }
+  async function askUser() {
+    let k = prompt('Enter OpenAI API key')
+    if (!k) return
+    let resp = await generateResponse('hello', k)
+    if (resp) { //verified
+      currentKey = k; saveKey(k);
+      noKey.style.display = 'none';
+    } else if (!currentKey) {
+      main.style.display = 'none'; //hide
+      console.error('You need an OpenAI API key')
+    }
+  }
+
   async function doQuery() {
     const prompt = `User: ${input.value}\nBot:`;
     const resp = await generateResponse(prompt);
@@ -85,28 +117,25 @@
   }
   input.focus()
 
-  async function generateResponse(prompt) {
+  async function generateResponse(prompt, key=currentKey) {
     const u = 'https://api.openai.com/v1/engines/' + MODEL + '/completions'
-    const body = JSON.stringify({
-      'prompt': prompt,
-      'max_tokens': 200,
-    })
+    const body = JSON.stringify({ prompt, max_tokens })
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + access._key,
+      'Authorization': 'Bearer ' + key,
     }
     const method = 'POST'
-    const opt = {
-      method,
-      headers,
-      body
+    const opt = { method, headers, body }
+    try {
+      const resp = await fetch(u, opt);
+      if (!resp.ok) return null;
+      const data = await resp.json();
+      return data.choices[0].text.trim();
+    } catch (e) {
+      return e
     }
-    const resp = await fetch(u, opt);
-    const data = await resp.json();
-    return data.choices[0].text.trim();
   }
   function close(evt) {
-    console.log(evt)
     let t = evt.target
     let p = t.parentElement
     let q = p.nextSibling
@@ -128,12 +157,16 @@
   }
 
 function speak(s=input.value, t=dil.value) {
-    let u = new SpeechSynthesisUtterance(s)
-    u.lang = t; speechSynthesis.speak(u)
+    SU.lang = t; SU.text = s
+    speechSynthesis.speak(SU)
+    listenB.textContent = STOP; 
+}
+function showMicrophone() {
+    listenB.textContent = MICRO
 }
 function listen(t=dil.value) {
     SR.lang = t; SR.start()
-    input.value = 'Listening'
+    input.value = 'Dinliyorum...'
     input.style.background = 'yellow'
 }
 function getResult(e) {
@@ -148,18 +181,27 @@ function error(e) {
     input.value = '[no input]'
     input.style.background = 'pink'
 }
-const dil = { value: 'en-EN' }
+const dil = { value: 'tr-TR' }
 const SR = new webkitSpeechRecognition()
 SR.onspeechend = SR.stop; SR.onsoundend = error
 SR.onresult = getResult;  SR.onnomatch = error
-button.onclick = listen;
+const SU = new SpeechSynthesisUtterance()
+SU.onend = showMicrophone
+keyBut.onclick = askUser;
+listenB.onclick = () => {
+  if (!speechSynthesis.speaking) listen()
+  else {
+    speechSynthesis.cancel(); showMicrophone()
+  }
+}
 
-  function noKeyFound(e) {
+  function noKeyFound(e) { //not used
     main.style.display = 'none'; //hide
     noKey.style.display = ''; //show
-    throw e
+    throw 'You need an openAI key'
   }
   title.textContent = document.title+' -- '+VERSION
-  if (!access._key) noKeyFound('You need an access key')
-  noKey.style.display = 'none';
+  if (currentKey)
+    noKey.style.display = 'none'
+  else askUser()
 </script>
