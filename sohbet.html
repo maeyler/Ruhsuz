@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>OpenAI Chatbot</title>
+  </head>
+  <body>
+    <h1>OpenAI Chatbot</h1>
+    <div id="chatlog"></div>
+    <div>
+      <input type="text" id="user-input" placeholder="Enter your message...">
+      <button id="send-btn">Send</button>
+    </div>
+    <script>
+      const openaiApiKey = 'your_api_key';
+      const modelEngine = 'text-davinci-002';
+      const chatlogEl = document.getElementById('chatlog');
+      const userInputEl = document.getElementById('user-input');
+      const sendBtnEl = document.getElementById('send-btn');
+      
+      sendBtnEl.addEventListener('click', async () => {
+        const userInput = userInputEl.value;
+        const prompt = `User: ${userInput}\nBot:`;
+        const botResponse = await generateResponse(prompt);
+        appendToChatlog(userInput, 'user');
+        appendToChatlog(botResponse, 'bot');
+        userInputEl.value = '';
+      });
+      
+      const generateResponse = async (prompt) => {
+        const response = await fetch('https://api.openai.com/v1/engines/' + modelEngine + '/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + openaiApiKey,
+          },
+          body: JSON.stringify({
+            'prompt': prompt,
+            'max_tokens': 60,
+            'n': 1,
+            'stop': null,
+            'temperature': 0.5,
+          }),
+        });
+        const data = await response.json();
+        const message = data.choices[0].text.trim();
+        return message;
+      };
+      
+      const appendToChatlog = (message, sender) => {
+        const senderClass = sender === 'bot' ? 'bot-message' : 'user-message';
+        const messageEl = document.createElement('div');
+        messageEl.className = senderClass;
+        messageEl.textContent = message;
+        chatlogEl.appendChild(messageEl);
+      };
+    </script>
+    <style>
+      #chatlog {
+        display: flex;
+        flex-direction: column;
+        height: 200px;
+        border: 1px solid black;
+        padding: 10px;
+        overflow-y: auto;
+      }
+      
+      .user-message {
+        margin-left: auto;
+        background-color: #c3e2ff;
+        padding: 5px;
+        max-width: 50%;
+      }
+      
+      .bot-message {
+        margin-right: auto;
+        background-color: #d6e9c6;
+        padding: 5px;
+        max-width: 50%;
+      }
+    </style>
+  </body>
+</html>
