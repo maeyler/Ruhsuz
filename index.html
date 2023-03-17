@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr-TR">
+<meta charset="UTF-8">
+<meta name="viewport"    content="width=device-width" />
+<meta name="author"      content="M A Eyler, Istanbul, 2023" />
+<meta name="description" content="Ruhsuz Sohbet ve Çeviri" />
+<!-- <meta name="theme-color" content="#59b" /> -->
+<!-- <link rel="stylesheet" href="code/reader.css" media="all"> -->
+<link rel="icon" href="image/robot.png">
+<title>Ruhsuz Zekâ 🤖</title>
+
+<style>
+  body  {
+    max-width: 900px;
+    background: honeydew;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13pt;
+  }
+  iframe {
+    background: white;
+    border: none;
+  }
+  img {
+    max-width: 100%;
+  }
+  #items {
+    position: absolute;
+    width: 190px;
+    background: blue;
+    color: white;
+    padding: 10px;
+  }
+  .column {
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: top;
+    width: 400px;
+    height: 98vh;
+  }
+</style>
+
+<div class=column>
+  <h2 id=ruhsuz></h2>
+  <p id=getKey>API anahtarı gerekli: 
+    <a href="https://platform.openai.com/account/api-keys">Buradan alın</a>
+  </p>
+  <p>Yazılımın iki bileşeni:&emsp;
+    <button disabled>Sohbet</button>&emsp;
+    <button disabled>Çeviri</button><br> 
+  </p>
+  <p>
+    İnsanlığın iki hayali gerçek oldu:<br>
+    • Arkadaş gibi sohbet eden bir robot<br>
+    • Sözleri başka dile çeviren bir araç
+  </p>
+  <p>Üç teknolojiyi birleştiriyor:</p>
+  <img src="image/teknoloji.png">
+  <ul>
+    <li>Ses tanıma (Google’da yapıldığı için ancak Chrome ile çalışır)</li>
+    <li>Yapay zekâ (OpenAI’da yapıldığı için API anahtarı gerekiyor)</li>
+    <li>Konuşma (Speech Synthesis – yerel cihazda yapılıyor)</li>
+  </ul>
+  <p>Ses tanımayı desteklemeyen tarayıcılarda sesli komut yerine yazılı komut (düz metin) ile çalışır</p>
+</div>
+<iframe class=column>
+  Output burada görülecek
+</iframe>
+
+<script>
+  ruhsuz.textContent = document.title
+  if (localStorage.openai) getKey.hidden = true
+</script>
+</html>
