@@ -5,7 +5,7 @@
 <meta name="author"      content="M A Eyler, Istanbul, 2023" />
 <meta name="description" content="Ruhsuz Sohbet ve Çeviri" />
 <!-- <link rel="stylesheet" href="code/reader.css" media="all"> -->
-<link rel="icon" href="image/robot.png">
+<link rel="icon" href="image/imre.png">
 <title>Ruhsuz Zekâ</title>
 
 <style>
@@ -46,7 +46,7 @@
 </style>
 
 <div class=column>
-  <h2 id=ruhsuz></h2>
+  <h2>Ruhsuz Zekâ <img src="./image/imre.png" width="48"> V0.5</h2>
   <button id="keyBut">🔑</button>
   <p>
     <span id=getKey>API anahtarı gerekli: 
@@ -75,7 +75,8 @@
 </iframe>
 
 <script>
-  ruhsuz.textContent = document.title+' 🤖'
+  // const VERSION = 'V0.5';
+  // ruhsuz.textContent = document.title+' 🤖 '+VERSION
   if (localStorage.openAI) {
     getKey.hidden = true
     app.src = "sohbet.html"

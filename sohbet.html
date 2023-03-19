@@ -2,7 +2,7 @@
 <html lang="en-US">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width">
-  <title>Ruhsuz Zekâ</title>
+  <title>Ruhsuz Sohbet</title>
   <style>
     body {
       max-width: 600px;
@@ -50,7 +50,7 @@
     }
   </style>
 
-<h2 id=title></h2>
+<!-- <h2 id=title></h2> -->
 <div id=main>
   <div id="chatlog"></div>
   <div>
@@ -66,7 +66,6 @@
 </div>
   
 <script>
-  const VERSION = 'V0.4';
   const MODEL = 'text-davinci-002';
   const max_tokens = 256;
   const chatlog = document.getElementById('chatlog');
@@ -200,7 +199,7 @@ listenB.onclick = () => {
     noKey.style.display = ''; //show
     throw 'You need an openAI key'
   }
-  title.textContent = document.title+' -- '+VERSION
+  // title.textContent = document.title+' -- '+VERSION
   if (currentKey)
     noKey.style.display = 'none'
   else askUser()
